@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voćna Igra 🍓</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Lilita+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LEBDEĆE VOĆE U POZADINI -->
+<div id="fruit-bg"></div>
+
+<!-- FEEDBACK TOAST -->
+<div class="fb-toast" id="fb-toast"></div>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="hud-left">
+    <div class="hud-logo">🍓 Voćna Igra</div>
+    <div class="hud-pts">⭐ <span id="hud-pts">0</span></div>
+    <div class="hud-timer" id="hud-timer">⏱️ <span id="hud-time">20</span>s</div>
+  </div>
+  <button class="hud-home" onclick="goHome()">🏠 Natrag</button>
+</div>
+
+<!-- ══════════════════════════════════
+     POČETNI EKRAN
+══════════════════════════════════════ -->
+<div class="screen active" id="screen-start">
+
+  <!-- HERO -->
+  <div class="hero-header">
+    <div class="mascot">🍓</div>
+    <div class="logo-title">Voćna <span>Igra</span></div>
+    <div class="logo-sub">Uči uz voće, životinje i boje!</div>
+  </div>
+
+  <!-- PDF GUMB -->
+  <a href="KORISNIČKE UPUTE VOĆNA IGRA.pdf" target="_blank" rel="noopener">
+    <button class="btn-upute">📄 Korisničke upute</button>
+  </a>
+
+  <!-- POSTAVKE + TEŽINA — PARALELNO -->
+  <div class="settings-level-row">
+
+    <div class="settings-block">
+      <div class="settings-block-title">⚙️ Postavke</div>
+      <div class="settings-row">
+        <div class="spill">
+          <span class="spl">🌙 Tema</span>
+          <label class="tog">
+            <input type="checkbox" id="theme-tog" onchange="setTheme(this.checked)">
+            <div class="tog-track"></div>
+            <div class="tog-knob"></div>
+          </label>
+        </div>
+        <div class="spill">
+          <span class="spl">⏱️ Tajmer</span>
+          <label class="tog">
+            <input type="checkbox" id="timer-tog" onchange="setTimerPref(this.checked)">
+            <div class="tog-track"></div>
+            <div class="tog-knob"></div>
+          </label>
+        </div>
+        <div class="spill">
+          <span class="spl">🔊 Govor</span>
+          <label class="tog">
+            <input type="checkbox" id="tts-tog" checked onchange="setTtsPref(this.checked)">
+            <div class="tog-track"></div>
+            <div class="tog-knob"></div>
+          </label>
+        </div>
+      </div>
+      <!-- skriveni labeli za JS -->
+      <span id="tlabel" style="display:none">Isključen</span>
+      <span id="ttslabel" style="display:none">Uključen</span>
+    </div>
+
+    <div class="level-block">
+      <div class="settings-block-title">🎯 Težina</div>
+      <div class="level-col">
+        <button class="lvl-btn easy-on" id="btn-easy" onclick="setLevel('easy')">
+          <span class="le">🐣</span>Lakše
+        </button>
+        <button class="lvl-btn" id="btn-hard" onclick="setLevel('hard')">
+          <span class="le">🔥</span>Teže
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- IGRE — VELIKI GUMBI ZA DJECU -->
+  <div class="section-wrap">
+    <div class="section-label">Odaberi igru</div>
+    <div class="games-bigbtns">
+
+      <button class="gbtn gbtn-fruit" onclick="startGame('fruit')">
+        <span class="gbtn-icon">🍎</span>
+        <span class="gbtn-name">Što je ovo voće?</span>
+      </button>
+
+      <button class="gbtn gbtn-animal" onclick="startGame('animal')">
+        <span class="gbtn-icon">🐘</span>
+        <span class="gbtn-name">Koja životinja?</span>
+      </button>
+
+      <button class="gbtn gbtn-color" onclick="startGame('color')">
+        <span class="gbtn-icon">🎨</span>
+        <span class="gbtn-name">Pogodi boju</span>
+      </button>
+
+      <button class="gbtn gbtn-memory" onclick="startGame('memory')">
+        <span class="gbtn-icon">🃏</span>
+        <span class="gbtn-name">Memory</span>
+      </button>
+
+      <button class="gbtn gbtn-letter" onclick="startGame('letter')">
+        <span class="gbtn-icon">🔤</span>
+        <span class="gbtn-name">Početno slovo</span>
+      </button>
+
+      <button class="gbtn gbtn-missing" onclick="startGame('missing')">
+        <span class="gbtn-icon">🔍</span>
+        <span class="gbtn-name">Što je nestalo?</span>
+      </button>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════
+     EKRAN IGRE
+══════════════════════════════════════ -->
+<div class="screen" id="screen-game">
+  <div class="g-title"  id="g-title">Igra</div>
+  <div class="g-round"  id="g-round">Krug 1 / 5</div>
+  <div class="prog-wrap">
+    <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+  </div>
+  <div class="instr-box" id="instr-box">Uputa</div>
+  <div class="game-panel" id="game-panel"></div>
+  <div class="tbar-wrap" id="tbar-wrap">
+    <div class="tbar-fill" id="tbar-fill" style="width:100%"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     ZAVRŠNI EKRAN
+══════════════════════════════════════ -->
+<div class="screen" id="screen-end">
+  <div class="end-mascot">🍓</div>
+  <div class="end-title" id="end-title">Bravo!</div>
+  <div class="end-stars" id="end-stars"></div>
+  <div class="end-pts"   id="end-pts"></div>
+  <div class="end-msg"   id="end-msg"></div>
+  <div class="end-btns">
+    <button class="ebtn home"  onclick="goHome()">🏠 Početak</button>
+    <button class="ebtn again" onclick="playAgain()">🔄 Igraj opet</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
